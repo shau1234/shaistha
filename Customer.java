@@ -37,7 +37,7 @@ public class Customer {
 	@JoinColumn(name="user_fk")
 	User user;
 	
-	@OneToMany(targetEntity=Address.class, mappedBy="customer")
+	@OneToMany(mappedBy="customer",cascade=CascadeType.MERGE)
 	//@JoinColumn(name="customer_addr_fk", referencedColumnName = "customerId")
 	private List<Address> addresses = new ArrayList<>();
 
