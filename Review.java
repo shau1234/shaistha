@@ -35,7 +35,7 @@ public class Review {
      LocalDate reviewOn;
 //	
 //    private Book book;
-      @JsonIgnore
+      //@JsonIgnore
      @ManyToOne(cascade= CascadeType.ALL)
  	@JoinColumn(name="customer_review_fk")
  	private Customer customer;
