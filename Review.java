@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -40,12 +41,19 @@ public class Review {
  	@JoinColumn(name="customer_review_fk")
  	private Customer customer;
 
-	
+     
+     
+     //@JsonIgnore
+   @OneToOne(cascade= CascadeType.ALL)
+	@JoinColumn(name="book_fk")
+	Book book;
+
 	
 
 	public  Review () {}
 
-		public Review(int reviewId, String headLine, String comment, double rating, LocalDate reviewOn, Customer customer) {
+				public Review(int reviewId, String headLine, String comment, double rating, LocalDate reviewOn, Customer customer,
+			Book book) {
 		super();
 		this.reviewId = reviewId;
 		this.headLine = headLine;
@@ -53,9 +61,8 @@ public class Review {
 		this.rating = rating;
 		this.reviewOn = reviewOn;
 		this.customer = customer;
+		this.book = book;
 	}
-
-
 
 
 		public int getReviewId() {
@@ -112,14 +119,23 @@ public class Review {
 		public void setCustomer(Customer customer) {
 			this.customer = customer;
 		}
-
 		
+		public Book getBook() {
+			return book;
+		}
+
+		public void setBook(Book book) {
+			this.book = book;
+		}
+
 		@Override
 		public String toString() {
 			return "Review [reviewId=" + reviewId + ", headLine=" + headLine + ", comment=" + comment + ", rating="
-					+ rating + ", reviewOn=" + reviewOn + ", customer=" + customer + "]";
+					+ rating + ", reviewOn=" + reviewOn + ", customer=" + customer + ", book=" + book + "]";
 		}
 
+		
+		
 		
 		
 		
