@@ -3,10 +3,10 @@ package com.demo.book.dto;
 import lombok.Data;
 
 @Data
-public class UserDto {
-	private int userId;
+
+public class UserLoginDto {
 	private String email;
+	private String password;
 	private String role;
-	private boolean isLoggedIn;
 
 }

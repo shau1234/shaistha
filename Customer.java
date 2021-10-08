@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="customer")
 public class Customer {
@@ -31,17 +33,19 @@ public class Customer {
 	@NotEmpty
 	@Size(min=3, message="customer fullname should have atleast 3 char")
 	private String fullName;
-	LocalDate registerOn;
+	@JsonIgnore
+	private LocalDate registerOn=LocalDate.now();
 	
 	@OneToOne(cascade=CascadeType.ALL)
 	@JoinColumn(name="user_fk")
 	User user;
 	
-	@OneToMany(mappedBy="customer",cascade=CascadeType.ALL)
+	@JsonIgnore
+	@OneToMany(mappedBy="customer", cascade=CascadeType.ALL)
 	//@JoinColumn(name="customer_addr_fk", referencedColumnName = "customerId")
 	private List<Address> addresses = new ArrayList<>();
 
-	
+	@JsonIgnore
 	@OneToMany(targetEntity=Review.class, mappedBy="customer")
 	//@JoinColumn(name="customer_addr_fk", referencedColumnName = "customerId")
 	private List<Review> reviews = new ArrayList<>();

@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,27 +15,34 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.demo.book.entity.Address;
 import com.demo.book.entity.Customer;
 import com.demo.book.exception.CustomerNotFoundException;
 import com.demo.book.service.ICustomerService;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class CustomerController {
 	@Autowired
 	ICustomerService customerService;
+	private static Logger logger = LogManager.getLogger();
 	
 	//get all customers
 	@GetMapping("/customers")
 	ResponseEntity<List<Customer>> getAllCustomers() {
+		logger.info("Sending request to service layer for getting customers");
 		return new ResponseEntity<>(customerService.getAllCustomers(), HttpStatus.OK); // 200 Ok
 	}
 	
 	// Get customer by customerId - GET
 			@GetMapping("/customers/customerId/{customerId}")
 			ResponseEntity<Customer> getCustomerByCustomerId(@PathVariable("customerId") int customerId) throws CustomerNotFoundException  {
-			Customer customer = customerService.getCustomerByCustomerId(customerId);
-			 return new ResponseEntity<>(customer, HttpStatus.OK); // 200 Ok
+				logger.info("Sending request to service layer to get customer by customerId");
+				Customer customer = customerService.getCustomerByCustomerId(customerId);
+				logger.info("Returning customer object");
+				return new ResponseEntity<>(customer, HttpStatus.OK); // 200 Ok
 				
 			}
 	
@@ -79,6 +87,12 @@ public class CustomerController {
 			Customer customer = customerService.updateCustomerName(customerId, newName);
 			return new ResponseEntity<>(customer, HttpStatus.OK);
 		}
+		
+		@PatchMapping("/customers/updateAddr/{customerId}")
+		ResponseEntity<Customer> updateCustomerAddress(@PathVariable("customerId") int customerId, @RequestBody List<Address> addresses) throws CustomerNotFoundException {
+			return new ResponseEntity<>(customerService.updateCustomerAddress(customerId, addresses), HttpStatus.OK);
+		}
+		
 
 
 }

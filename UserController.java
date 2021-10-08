@@ -15,21 +15,25 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.demo.book.dto.UserDto;
+import com.demo.book.dto.UserLoginDto;
 import com.demo.book.entity.Customer;
 import com.demo.book.entity.User;
 import com.demo.book.exception.InvalidCredentialsException;
 import com.demo.book.exception.UserNotFoundException;
 import com.demo.book.service.IUserService;
-
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 	@Autowired
 	IUserService userService;
-	
+	private static Logger logger = LogManager.getLogger();
 	
 	@GetMapping("/users")
-	ResponseEntity<List<User>> getAllUsers() {
+	ResponseEntity<List<UserDto>> getAllUsers() {
 		return new ResponseEntity<>(userService.getAllUsers(), HttpStatus.OK);
 	}
 	
@@ -64,15 +68,16 @@ public class UserController {
 				
 				// Login user - POST
 				@PostMapping("/login")
-				ResponseEntity<UserDto> login(@RequestBody User user) throws UserNotFoundException, InvalidCredentialsException {
+				ResponseEntity<UserDto> login(@RequestBody UserLoginDto user) throws UserNotFoundException, InvalidCredentialsException {
 					UserDto u = userService.login(user);
 					return new ResponseEntity<>(u, HttpStatus.CREATED); // 201 created
 				}
 				
 				// logout user - PATCH
-				@PatchMapping("/logout")
-				ResponseEntity<UserDto> logout( @RequestBody User user) throws UserNotFoundException {
-					UserDto u = userService.logout(user);
+				@PatchMapping("/logout/{email}")
+				ResponseEntity<UserDto> logout( @PathVariable("email") String email) throws UserNotFoundException, InvalidCredentialsException {
+					logger.info(email);
+					UserDto u = userService.logout(email);
 					return new ResponseEntity<>(u, HttpStatus.OK);
 				}
 
